@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Handlebars demo</title>
+    <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/handlebars/handlebars.min.js"></script>
+    <script type="text/javascript" src="mytest.js"></script>
+    <style type="text/css"></style>
+</head>
+<ul>
+    {{#each items}}
+    <li>{{agree_button}}</li>
+    {{/each}}
+</ul>
+</body>
+<script>
+    var context = {
+        items: [{
+            name: "Handlebars",
+            emotion: "love"
+        }, {
+            name: "Mustache",
+            emotion: "enjoy"
+        }, {
+            name: "Ember",
+            emotion: "want to learn"
+        }]
+    };
+
+    Handlebars.registerHelper('agree_button', function() {
+        return new Handlebars.SafeString(
+            "<button>I agree. I " + this.emotion + " " + this.name + "</button>"
+        );
+    });
+</script>
+
+</html>

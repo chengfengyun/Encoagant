@@ -1,0 +1,25 @@
+
+<style>
+  .navbar-nav > li > a:hover {background:#555 !important;color:#fff !important;}
+  .navbar-nav > li:last-of-type > a {border:0;}
+  @media ( min-width: 768px) {
+    .navbar-nav > li > a {text-align:center;border-right:1px solid rgba(0,0,0,0.1)}
+  }
+</style>
+<div class="container">
+  {{> menu }}
+  <div class="main">
+    <img src="/images/main.jpg" width="1180px" height="420px" alt="">
+  </div>
+  <div class="news">
+    <h2><b>当下热点</b></h2>
+    <div class="content">
+    <div class="box">
+      {{#mes}}
+        <div class="title">{{title}}</div>
+        <div class="link">{{link}}</div>
+      {{/mes}}
+    </div>
+    </div>
+  </div>
+</div>
