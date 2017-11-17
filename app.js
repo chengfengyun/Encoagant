@@ -4,10 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var exphbs = require('express3-handlebars');
+var connect = require('connect-mongo');
 var flash = require('connect-flash');
+var settings = require('./settings');
 var session = require('express-session');
-var MySQLStore = require('express-mysql-session')(session);
+var exphbs = require('express3-handlebars')
+var MongoStore = require('connect-mongo')(session);
 
 var app = express();
 
@@ -38,23 +40,38 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')))
+app.use(express.static(path.join(__dirname, 'download')));
+app.use(express.static(path.join(__dirname, 'desc')));
 
-var options = require('./settings.js').db;
-var sessionStore = new MySQLStore(options);
-app.use(session({
-    key: 'session_cookie_name',
-    cookie: { maxAge: 1200 }, //20min
-    secret: 'session_cookie_secret',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: true
-}));
 app.use(flash());
+app.use(session({
+    secret: settings.cookieSecret,
+    key: settings.db, //cookiename
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 30 }, //30days
+    resave: false,
+    store: new MongoStore({
+        // db: settings.db
+        url: 'mongodb://localhost/' + settings.db
+    }, function() {
+        console.log('connect mongodb success...');
+    })
+}));
 
 var index = require('./routes/index');
-var users = require('./routes/users');
+var link = require('./routes/link');
+var list = require('./routes/list');
+var list_dl = require('./routes/dl');
+var download = require('./routes/download');
+var download_app = require('./routes/download_app');
+
 app.use('/', index);
-app.use('/users', users);
+app.use('/link', link);
+app.use('/list', list);
+app.use('/dl', list_dl);
+app.use('/download', download);
+app.use('/download_app', download_app);
+// app.use('/users', users);
+// app.use('/*', list)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
